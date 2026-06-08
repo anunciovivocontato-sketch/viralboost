@@ -1,0 +1,2825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ViralBoost AI — Crescimento YouTube com IA Gratuita</title>
+  <meta name="description" content="ViralBoost AI: gere títulos magnéticos com psicologia de clique, thumbnails High-CTR 1280x720, 15 tags SEO e análise de especialista para seu canal no YouTube — 100% gratuito com Groq AI."/>
+  <meta property="og:title"       content="ViralBoost AI — Crescimento YouTube Gratuito"/>
+  <meta property="og:description" content="Gere títulos virais, thumbnails High-CTR e análise de especialista. Gratuito com Groq AI."/>
+  <meta name="twitter:card"       content="summary_large_image"/>
+  <style>
+/* ============================================================
+   ViralBoost AI — Stylesheet
+   Organização:
+   1. Reset e Variáveis
+   2. Base
+   3. Onboarding (Telas de setup)
+   4. Componentes compartilhados (cards, botões, inputs)
+   5. App — Layout principal
+   6. App — Painel esquerdo (inputs)
+   7. App — Painel direito (resultados)
+   8. Utilitários e animações
+   9. Responsivo
+   ============================================================ */
+
+
+/* ── 1. RESET E VARIÁVEIS ────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Fundos */
+  --bg:  #080a0f;
+  --s1:  #0d1018;
+  --s2:  #131720;
+  --s3:  #1a2030;
+
+  /* Bordas */
+  --b1: rgba(255, 255, 255, .06);
+  --b2: rgba(255, 255, 255, .11);
+
+  /* Cores de destaque */
+  --ac:  #e8ff47;  /* amarelo neon — principal */
+  --ac2: #47b4ff;  /* azul  */
+  --ac3: #ff4766;  /* vermelho */
+  --gr:  #4ade80;  /* verde */
+
+  /* Tipografia */
+  --t1: #f0f2f8;   /* texto principal */
+  --t2: #8a9ab8;   /* texto secundário */
+  --t3: #4a5670;   /* texto terciário / dicas */
+
+  /* Raio de borda padrão */
+  --r: 11px;
+}
+
+
+/* ── 2. BASE ──────────────────────────────────────────────────── */
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+code {
+  color: var(--ac);
+  font-family: monospace;
+  font-size: 12px;
+}
+
+a {
+  color: var(--ac2);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+/* ── 3. ONBOARDING ────────────────────────────────────────────── */
+
+/* Container geral do onboarding */
+#onboarding {
+  position: relative;
+}
+
+/* Cada tela de onboarding */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 5rem 1.5rem 2rem;
+  overflow-y: auto;
+}
+
+.screen.on {
+  display: flex;
+}
+
+/* Indicador de progresso fixo no topo */
+.progress-dots {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  z-index: 100;
+  background: rgba(8,10,15,.7);
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(10px);
+}
+
+.pdot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--s3);
+  transition: all .3s;
+}
+
+.pdot.on {
+  background: var(--ac);
+  width: 22px;
+  border-radius: 100px;
+}
+
+/* Cartão de onboarding */
+.ocard {
+  background: var(--s1);
+  border: 1px solid var(--b2);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 560px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.4);
+}
+
+.ocard-header {
+  padding: 1.5rem 1.75rem 1.1rem;
+  border-bottom: 1px solid var(--b1);
+}
+
+.ocard-body {
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+
+.ocard-footer {
+  padding: 1.1rem 1.75rem;
+  border-top: 1px solid var(--b1);
+  display: flex;
+  gap: .75rem;
+}
+
+/* Títulos das telas */
+.screen-title {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -.02em;
+  line-height: 1.25;
+}
+
+.screen-title span {
+  color: var(--ac);
+}
+
+.screen-sub {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.65;
+  margin-top: 5px;
+}
+
+.screen-sub {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.7;
+  margin-top: 4px;
+}
+
+/* Passos numerados */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  list-style: none;
+  padding: 0;
+}
+
+.step-item {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.step-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ac);
+  color: #080a0f;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0;
+  box-shadow: 0 0 12px rgba(232,255,71,.3);
+}
+
+.step-body {
+  flex: 1;
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+
+.step-desc {
+  font-size: 12px;
+  color: var(--t2);
+  line-height: 1.55;
+}
+
+/* Tags coloridas dos passos */
+.step-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-family: monospace;
+  padding: 2px 8px;
+  border-radius: var(--r);
+  margin-top: 4px;
+}
+
+.step-tag.green  { background: rgba(74,222,128,.12);  color: var(--gr);  border: 1px solid rgba(74,222,128,.2);  }
+.step-tag.yellow { background: rgba(232,255,71,.1);   color: var(--ac);  border: 1px solid rgba(232,255,71,.2);  }
+.step-tag.blue   { background: rgba(71,180,255,.12);  color: var(--ac2); border: 1px solid rgba(71,180,255,.2);  }
+.step-tag.red    { background: rgba(255,71,102,.12);  color: var(--ac3); border: 1px solid rgba(255,71,102,.2);  }
+
+/* Caixas informativas coloridas */
+.info-box {
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+.info-box.blue   { background: rgba(71,180,255,.07);  border: 1px solid rgba(71,180,255,.18);  }
+.info-box.yellow { background: rgba(232,255,71,.06);  border: 1px solid rgba(232,255,71,.18);  }
+.info-box.green  { background: rgba(74,222,128,.07);  border: 1px solid rgba(74,222,128,.18);  }
+.info-box.red    { background: rgba(255,71,102,.07);  border: 1px solid rgba(255,71,102,.18);  }
+
+.info-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.info-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 3px;
+}
+
+.info-desc {
+  font-size: 12px;
+  color: var(--t2);
+  line-height: 1.55;
+}
+
+.info-desc strong {
+  color: var(--t1);
+}
+
+/* Tabela de créditos (onboarding) */
+.credit-table {
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--b2);
+}
+
+.ct-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: var(--s2);
+  padding: 8px 12px;
+  font-size: 10px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--t3);
+  gap: 8px;
+}
+
+.ct-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  gap: 8px;
+  border-top: 1px solid var(--b1);
+}
+
+.ct-row:nth-child(even) {
+  background: rgba(255, 255, 255, .02);
+}
+
+.ct-val      { color: var(--t2); }
+.ct-val.ac   { color: var(--ac); font-weight: 600; }
+.ct-val.gr   { color: var(--gr); }
+
+/* FAQ accordion */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.faq-item {
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--t1);
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  user-select: none;
+  transition: background .15s;
+}
+
+.faq-q:hover {
+  background: rgba(255, 255, 255, .03);
+}
+
+.faq-a {
+  padding: 0 14px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s;
+  font-size: 12.5px;
+  color: var(--t2);
+  line-height: 1.6;
+}
+
+.faq-a.open {
+  max-height: 200px;
+  padding: 0 14px 12px;
+}
+
+.faq-arrow {
+  font-size: 12px;
+  color: var(--t3);
+  transition: transform .3s;
+}
+
+.faq-arrow.open {
+  transform: rotate(180deg);
+}
+
+
+/* ── 4. COMPONENTES COMPARTILHADOS ────────────────────────────── */
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -.02em;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--ac);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo span {
+  color: var(--ac);
+}
+
+/* Chip "Powered by GPT" */
+.gpt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--t3);
+  font-family: monospace;
+  padding: 3px 10px;
+  border: 1px solid var(--b1);
+  border-radius: 100px;
+  margin-top: 6px;
+}
+
+.gpt-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10a37f;
+  flex-shrink: 0;
+}
+
+/* Botões primários / secundários */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: var(--ac);
+  color: #080a0f;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: -.01em;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(232, 255, 71, .25);
+}
+
+.btn-primary:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: 1px solid var(--b2);
+  color: var(--t2);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.btn-secondary:hover {
+  color: var(--t1);
+}
+
+/* Input de chave API */
+.key-wrap {
+  position: relative;
+}
+
+.key-input {
+  background: var(--s2);
+  border: 1px solid var(--b2);
+  border-radius: var(--r);
+  color: var(--t1);
+  font-family: monospace;
+  font-size: 13px;
+  padding: 13px 48px 13px 15px;
+  outline: none;
+  width: 100%;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.key-input:focus {
+  border-color: rgba(232, 255, 71, .5);
+  box-shadow: 0 0 0 3px rgba(232,255,71,.08);
+}
+
+.key-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--t3);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 2px;
+}
+
+/* Caixa de erro */
+.err-box {
+  background: rgba(255, 71, 102, .1);
+  border: 1px solid rgba(255, 71, 102, .3);
+  color: #f87171;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+/* Label padrão */
+.lbl {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  font-family: monospace;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Toast global */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--s3);
+  border: 1px solid var(--b2);
+  color: var(--t1);
+  font-size: 12px;
+  padding: 9px 16px;
+  border-radius: 100px;
+  font-family: monospace;
+  z-index: 999;
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), opacity .25s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+
+/* ── 5. APP — LAYOUT PRINCIPAL ────────────────────────────────── */
+#app {
+  display: none;
+  grid-template-columns: 1fr 440px;
+  min-height: 100vh;
+}
+
+#app:not([hidden]) {
+  display: grid;
+}
+
+
+/* ── 6. APP — PAINEL ESQUERDO ────────────────────────────────── */
+.pl {
+  padding: 1.75rem;
+  border-right: 1px solid var(--b1);
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+/* Inputs genéricos dentro do app */
+.pl input[type=text],
+.pl textarea,
+.pl select {
+  background: var(--s1);
+  border: 1px solid var(--b2);
+  border-radius: var(--r);
+  color: var(--t1);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 13px;
+  outline: none;
+  width: 100%;
+  transition: border-color .2s;
+  box-sizing: border-box;
+}
+
+.pl input:focus,
+.pl textarea:focus,
+.pl select:focus {
+  border-color: rgba(232, 255, 71, .4);
+}
+
+.pl select option {
+  background: var(--s2);
+}
+
+.pl textarea {
+  resize: none;
+}
+
+/* Grid de 2 colunas */
+.r2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Label do app */
+.app-lbl {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  font-family: monospace;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Abas */
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--s2);
+  padding: 4px;
+  border-radius: var(--r);
+  border: 1px solid var(--b1);
+}
+
+.tab {
+  padding: 8px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--t2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all .2s;
+}
+
+.tab.on {
+  background: var(--s3);
+  color: var(--t1);
+  border-color: var(--b2);
+}
+
+/* Cards de estilo da thumbnail */
+.sg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.sc {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 9px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+}
+
+.sc:hover { border-color: var(--b2); }
+
+.sc.on {
+  border-color: rgba(232, 255, 71, .45);
+  background: rgba(232, 255, 71, .05);
+}
+
+.sp {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.sn {
+  font-size: 10px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--t2);
+}
+
+.sc.on .sn { color: var(--ac); }
+
+/* Paleta de cores */
+.pr-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.po {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.po.on {
+  border-color: #fff;
+  transform: scale(1.15);
+}
+
+/* Seletor de tom */
+.tr {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.oc {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 9px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+}
+
+.oc:hover { border-color: var(--b2); }
+
+.oc.on {
+  border-color: rgba(232, 255, 71, .4);
+  background: rgba(232, 255, 71, .05);
+}
+
+.ov { font-size: 16px; }
+
+.ol {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--t3);
+  margin-top: 2px;
+}
+
+/* Upload de imagem */
+.upload {
+  border: 1.5px dashed var(--b2);
+  border-radius: 14px;
+  padding: 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--s1);
+  position: relative;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload:hover { border-color: rgba(232, 255, 71, .4); }
+
+.upload.drag {
+  border-color: var(--ac);
+  background: rgba(232, 255, 71, .06);
+}
+
+.upload input[type=file] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload img {
+  width: 100%;
+  border-radius: 9px;
+  display: block;
+  max-height: 150px;
+  object-fit: cover;
+}
+
+/* Dica de campo */
+.field-hint {
+  font-size: 11px;
+  color: var(--t3);
+  margin-top: 4px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.field-hint::before {
+  content: '💡';
+  flex-shrink: 0;
+}
+
+/* Painel de créditos */
+.credits-panel {
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 11px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.credits-title {
+  font-size: 10px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.credits-title a {
+  color: var(--ac2);
+  font-size: 9px;
+}
+
+.credits-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  list-style: none;
+}
+
+.cr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+}
+
+.cr-label { color: var(--t2); }
+
+.cr-val {
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.cr-val.green  { color: var(--gr); }
+.cr-val.yellow { color: var(--ac); }
+
+/* Botão principal de geração */
+.gbtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  background: var(--ac);
+  color: #080a0f;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.gbtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(232, 255, 71, .25);
+}
+
+.gbtn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Spinner de loading */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spin {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(8, 10, 15, .3);
+  border-top-color: #080a0f;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: inline-block;
+}
+
+
+/* ── 7. APP — PAINEL DIREITO (RESULTADOS) ─────────────────────── */
+.pr {
+  background: var(--s1);
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+}
+
+/* Cabeçalho dos resultados */
+.rh {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--b1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.rh h2 {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -.01em;
+}
+
+/* Tag de status */
+.rtag {
+  font-size: 9px;
+  font-family: monospace;
+  padding: 2px 8px;
+  background: rgba(71, 180, 255, .12);
+  color: var(--ac2);
+  border: 1px solid rgba(71, 180, 255, .2);
+  border-radius: 100px;
+}
+
+.rtag.done {
+  background: rgba(74, 222, 128, .12);
+  color: var(--gr);
+  border-color: rgba(74, 222, 128, .25);
+}
+
+/* Corpo dos resultados (scrollável) */
+.rb {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rb::-webkit-scrollbar { width: 4px; }
+.rb::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 10px; }
+
+/* Estado de carregamento */
+.ls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 2.5rem 1rem;
+  flex: 1;
+}
+
+/* Anel de carregamento */
+.lr {
+  width: 60px;
+  height: 60px;
+  border: 3px solid var(--s3);
+  border-top-color: var(--ac);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.ll {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--t2);
+  text-align: center;
+}
+
+/* Lista de etapas do loading */
+.stps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 250px;
+  list-style: none;
+  padding: 0;
+}
+
+.stp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--t3);
+  transition: color .3s;
+}
+
+.stp.a { color: var(--t2); }
+.stp.d { color: var(--gr); }
+
+.sd {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--s3);
+  flex-shrink: 0;
+  transition: background .3s;
+}
+
+.stp.a .sd { background: var(--ac); }
+.stp.d .sd { background: var(--gr); }
+
+/* Estado vazio */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  flex: 1;
+  padding: 2rem;
+}
+
+
+/* ── 8. UTILITÁRIOS E ANIMAÇÕES ──────────────────────────────── */
+
+/* Animação de entrada dos resultados */
+@keyframes fu {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.rs {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  animation: fu .35s ease both;
+}
+
+.rs:nth-child(2) { animation-delay: .05s; }
+.rs:nth-child(3) { animation-delay: .10s; }
+.rs:nth-child(4) { animation-delay: .15s; }
+.rs:nth-child(5) { animation-delay: .20s; }
+.rs:nth-child(6) { animation-delay: .25s; }
+.rs:nth-child(7) { animation-delay: .30s; }
+.rs:nth-child(8) { animation-delay: .35s; }
+.rs:nth-child(9) { animation-delay: .40s; }
+
+/* Label de seção de resultado */
+.rl {
+  font-size: 10px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rll::before {
+  content: '';
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ac);
+  display: inline-block;
+}
+
+/* Card de resultado */
+.rc {
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 13px;
+  position: relative;
+}
+
+/* Preview de thumbnail */
+.tw {
+  border-radius: 9px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--s3);
+}
+
+.tw canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Botões de ação da thumbnail */
+.tbtns {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tbtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid var(--b2);
+  background: var(--s2);
+  border-radius: 9px;
+  color: var(--t2);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.tbtn:hover {
+  background: var(--s3);
+  color: var(--t1);
+}
+
+.tbtn.dl {
+  background: rgba(232, 255, 71, .1);
+  border-color: rgba(232, 255, 71, .3);
+  color: var(--ac);
+}
+
+.tbtn.dl:hover {
+  background: rgba(232, 255, 71, .18);
+}
+
+/* Grid de scores */
+.sg3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.si {
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.sv {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -.03em;
+}
+
+.slb {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-family: monospace;
+  color: var(--t3);
+  margin-top: 2px;
+}
+
+/* Variantes de título */
+.vars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.var {
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 11px 12px;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.var:hover {
+  border-color: rgba(232, 255, 71, .3);
+  background: rgba(232, 255, 71, .03);
+}
+
+.var.on {
+  border-color: rgba(232, 255, 71, .5);
+  background: rgba(232, 255, 71, .05);
+}
+
+.vh {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.vn {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--t3);
+}
+
+/* Badge de gatilho psicológico */
+.pb {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  padding: 2px 8px;
+  border-radius: 100px;
+  border: 1px solid;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.vmb {
+  font-size: 9px;
+  font-family: monospace;
+  color: var(--t3);
+  margin-left: auto;
+}
+
+/* Botão de copiar dentro de variante */
+.vcopy {
+  width: 22px;
+  height: 22px;
+  background: var(--s3);
+  border: 1px solid var(--b2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.var:hover .vcopy { opacity: 1; }
+
+.vt {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--t1);
+}
+
+.vhook {
+  font-size: 11px;
+  color: var(--t3);
+  margin-top: 4px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* Tags */
+.tgl {
+  font-size: 9px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--t3);
+  margin-bottom: 5px;
+}
+
+.tgw {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tg {
+  padding: 4px 10px;
+  background: var(--s3);
+  border: 1px solid var(--b2);
+  border-radius: 100px;
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--t2);
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-block;
+}
+
+.tg:hover { color: var(--ac); }
+
+/* Medidores psicológicos */
+.mts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ml {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--t2);
+  width: 105px;
+  flex-shrink: 0;
+}
+
+.mtr {
+  flex: 1;
+  height: 5px;
+  background: var(--s3);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mf {
+  height: 100%;
+  border-radius: 10px;
+  width: 0%;
+  transition: width 1.1s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.mv {
+  font-size: 10px;
+  font-family: monospace;
+  color: var(--t3);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Fórmula viral */
+.frow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.ft {
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: 500;
+}
+
+.ft.hook   { background: rgba(124,77,255,.15);  color: #a78bfa;     border: 1px solid rgba(124,77,255,.25); }
+.ft.reward { background: rgba(74,222,128,.15);  color: #4ade80;     border: 1px solid rgba(74,222,128,.25); }
+.ft.number { background: rgba(232,255,71,.12);  color: var(--ac);   border: 1px solid rgba(232,255,71,.2);  }
+.ft.social { background: rgba(71,180,255,.12);  color: var(--ac2);  border: 1px solid rgba(71,180,255,.2);  }
+.ft.plus   { background: none; color: var(--t3); border: none; font-size: 14px; padding: 0 2px; }
+
+/* Painel de expert */
+.ep {
+  background: linear-gradient(135deg, rgba(232,255,71,.04), rgba(71,180,255,.03));
+  border: 1px solid rgba(232, 255, 71, .15);
+  border-radius: 16px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ep::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ac), var(--ac2), transparent);
+}
+
+.eph {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.epav {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--ac);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.epnm {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.eprl {
+  font-size: 9px;
+  color: var(--t3);
+  font-family: monospace;
+  margin-top: 3px;
+}
+
+.ins {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.in-i {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+}
+
+.ii {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.it {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+
+.ib {
+  font-size: 11px;
+  color: var(--t2);
+  line-height: 1.6;
+}
+
+/* Veredito */
+.verd {
+  background: var(--s3);
+  border-radius: 9px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 12px;
+}
+
+.vb {
+  width: 3px;
+  border-radius: 10px;
+  background: var(--ac);
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+.vt2 {
+  font-size: 11px;
+  color: var(--t2);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Botão copiar tudo */
+.cab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px;
+  background: rgba(232, 255, 71, .1);
+  border: 1px solid rgba(232, 255, 71, .25);
+  border-radius: var(--r);
+  color: var(--ac);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  width: 100%;
+}
+
+.cab:hover {
+  background: rgba(232, 255, 71, .15);
+}
+
+/* Análise de visão (aba imagem) */
+.vc {
+  background: var(--s2);
+  border: 1px solid rgba(71, 180, 255, .2);
+  border-radius: var(--r);
+  padding: 12px;
+}
+
+.vchip {
+  font-size: 9px;
+  font-family: monospace;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  background: rgba(71, 180, 255, .12);
+  color: var(--ac2);
+  border: 1px solid rgba(71, 180, 255, .2);
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* Grid de métricas CTR */
+.cg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ci {
+  background: var(--s3);
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+
+.cl {
+  font-size: 9px;
+  font-family: monospace;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 3px;
+}
+
+.cv {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/* Lista de melhorias */
+.il {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ii2 {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12px;
+  color: var(--t2);
+  line-height: 1.5;
+}
+
+.iico {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+
+/* ── 9. RESPONSIVO ────────────────────────────────────────────── */
+@media (max-width: 800px) {
+  #app:not([hidden]) {
+    grid-template-columns: 1fr;
+  }
+
+  .pr {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 520px) {
+  .ocard-body,
+  .ocard-header,
+  .ocard-footer {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+
+
+/* ── Groq chip (substitui gpt-chip) ───── */
+.groq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--t3);
+  font-family: monospace;
+  padding: 3px 10px;
+  border: 1px solid var(--b1);
+  border-radius: 100px;
+  margin-top: 6px;
+}
+.groq-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #f55036;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ══════════ ONBOARDING ══════════ -->
+<div id="onboarding" aria-label="Guia de configuração">
+
+  <nav class="progress-dots" aria-label="Progresso do guia" id="progress-nav">
+    <span class="pdot on" aria-label="Tela 1 de 3"></span>
+    <span class="pdot"    aria-label="Tela 2 de 3"></span>
+    <span class="pdot"    aria-label="Tela 3 de 3"></span>
+  </nav>
+
+  <!-- ── TELA 1: LANDING PAGE ─────────────────────────────────────── -->
+  <section class="screen on" id="s1" aria-labelledby="s1-title" style="display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:0;min-height:100vh;overflow-y:auto">
+
+    <nav style="position:sticky;top:0;z-index:50;background:rgba(8,10,15,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:9px;font-weight:800;font-size:1.1rem;letter-spacing:-.02em">
+        <div style="width:28px;height:28px;background:#e8ff47;border-radius:8px;display:flex;align-items:center;justify-content:center">
+          <svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 1L10.5 6h5l-4 3.5 1.5 5.5L8 12l-5 4 1.5-5.5L.5 7h5L8 1z" fill="#080a0f"/></svg>
+        </div>
+        Viral<span style="color:#e8ff47">Boost</span> AI
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:10px;font-family:monospace;padding:3px 10px;background:rgba(245,80,54,.1);color:#f55036;border:1px solid rgba(245,80,54,.25);border-radius:100px">⚡ Groq — 100% Gratuito</span>
+        <button id="btn-demo-s1" type="button" style="background:none;border:1px solid rgba(255,255,255,.12);color:#8a9ab8;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;transition:all .2s" onmouseover="this.style.borderColor='rgba(232,255,71,.4)';this.style.color='#e8ff47'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.color='#8a9ab8'">Ver demo</button>
+        <button id="btn-s1-next" type="button" style="background:#e8ff47;color:#080a0f;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(232,255,71,.3)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">Começar grátis →</button>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <div style="position:relative;overflow:hidden;padding:5rem 2rem 4rem;text-align:center;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(232,255,71,.08) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(245,80,54,.05) 0%,transparent 60%)">
+      <div style="position:absolute;top:20%;left:10%;width:300px;height:300px;background:radial-gradient(circle,rgba(232,255,71,.05),transparent 70%);border-radius:50%;pointer-events:none"></div>
+      <div style="position:absolute;top:30%;right:8%;width:250px;height:250px;background:radial-gradient(circle,rgba(245,80,54,.05),transparent 70%);border-radius:50%;pointer-events:none"></div>
+
+      <div style="display:inline-flex;align-items:center;gap:7px;font-size:11px;font-family:monospace;padding:5px 14px;background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.2);border-radius:100px;color:#e8ff47;margin-bottom:1.75rem">
+        <span style="width:6px;height:6px;border-radius:50%;background:#e8ff47;animation:pulse 2s infinite;display:inline-block"></span>
+        IA especialista em crescimento YouTube — 100% gratuito
+      </div>
+
+      <h1 id="s1-title" style="font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;max-width:780px;margin:0 auto 1.25rem">
+        Seu canal cresce mais rápido<br>com <span style="color:#e8ff47;position:relative">psicologia de clique<span style="position:absolute;bottom:-4px;left:0;right:0;height:3px;background:linear-gradient(90deg,#e8ff47,transparent);border-radius:10px"></span></span>
+      </h1>
+
+      <p style="font-size:1.1rem;color:#8a9ab8;max-width:560px;margin:0 auto 2.5rem;line-height:1.7">
+        Gere títulos estilo <strong style="color:#f0f2f8">MrBeast</strong>, thumbnails 1280×720 para download, 15 tags SEO e análise de especialista — em segundos e <strong style="color:#e8ff47">totalmente grátis</strong>.
+      </p>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+        <button id="btn-s1-next2" type="button" style="background:#e8ff47;color:#080a0f;border:none;padding:14px 32px;border-radius:11px;cursor:pointer;font-size:15px;font-weight:800;letter-spacing:-.01em;transition:all .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 30px rgba(232,255,71,.3)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+          ⚡ Usar o ViralBoost AI — Grátis
+        </button>
+        <button id="btn-demo-s1b" type="button" style="background:rgba(255,255,255,.05);color:#f0f2f8;border:1px solid rgba(255,255,255,.12);padding:14px 28px;border-radius:11px;cursor:pointer;font-size:15px;font-weight:600;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.09)'" onmouseout="this.style.background='rgba(255,255,255,.05)'">
+          Ver demonstração
+        </button>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:2rem;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#4a5670"><span style="color:#e8ff47">★★★★★</span> Baseado em técnicas dos maiores canais</div>
+        <div style="width:1px;height:14px;background:rgba(255,255,255,.08)"></div>
+        <div style="font-size:12px;color:#4a5670">⚡ Groq — 14.400 req/dia grátis</div>
+        <div style="width:1px;height:14px;background:rgba(255,255,255,.08)"></div>
+        <div style="font-size:12px;color:#4a5670">🇧🇷 Funciona no Brasil sem VPN</div>
+        <div style="width:1px;height:14px;background:rgba(255,255,255,.08)"></div>
+        <div style="font-size:12px;color:#4a5670">🔒 Chave só no seu navegador</div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div style="padding:3rem 2rem;max-width:1100px;margin:0 auto;width:100%">
+      <p style="text-align:center;font-size:11px;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;color:#4a5670;margin-bottom:.75rem">o que o app entrega</p>
+      <h2 style="text-align:center;font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:2.5rem">Tudo que seu canal precisa<br><span style="color:#e8ff47">em uma só geração</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px">
+
+        <div style="background:#0d1018;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem;transition:border-color .2s;cursor:default" onmouseover="this.style.borderColor='rgba(232,255,71,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="width:44px;height:44px;background:rgba(232,255,71,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem">🧠</div>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:6px">3 Títulos Magnéticos</h3>
+          <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Curiosidade, FOMO e Resultado Incrível — os 3 gatilhos psicológicos que fazem MrBeast ter 9%+ de CTR.</p>
+        </div>
+
+        <div style="background:#0d1018;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem;transition:border-color .2s;cursor:default" onmouseover="this.style.borderColor='rgba(71,180,255,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="width:44px;height:44px;background:rgba(71,180,255,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem">🖼️</div>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:6px">Thumbnail 1280×720</h3>
+          <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Gerada no Canvas com cores de alto impacto, texto gigante e silhueta expressiva. Download em um clique.</p>
+        </div>
+
+        <div style="background:#0d1018;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem;transition:border-color .2s;cursor:default" onmouseover="this.style.borderColor='rgba(74,222,128,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="width:44px;height:44px;background:rgba(74,222,128,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem">🏷️</div>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:6px">15 Tags Estratégicas</h3>
+          <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Alto volume, nicho e cauda longa — estratégia em 3 camadas para maximizar alcance orgânico no YouTube.</p>
+        </div>
+
+        <div style="background:#0d1018;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem;transition:border-color .2s;cursor:default" onmouseover="this.style.borderColor='rgba(255,71,102,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="width:44px;height:44px;background:rgba(255,71,102,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem">📝</div>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:6px">Descrição SEO Completa</h3>
+          <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Com keywords naturais, timestamps automáticos, CTAs e hashtags — pronta para colar no YouTube.</p>
+        </div>
+
+        <div style="background:#0d1018;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem;transition:border-color .2s;cursor:default" onmouseover="this.style.borderColor='rgba(124,77,255,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="width:44px;height:44px;background:rgba(124,77,255,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem">📊</div>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:6px">Score de Viralidade</h3>
+          <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Pontuações de Viral, SEO e CTR estimado para saber exatamente o potencial de cada conteúdo.</p>
+        </div>
+
+        <div style="background:#0d1018;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem;transition:border-color .2s;cursor:default" onmouseover="this.style.borderColor='rgba(232,255,71,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="width:44px;height:44px;background:rgba(232,255,71,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem">🏆</div>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:6px">Relatório do Consultor</h3>
+          <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Explica POR QUE cada título vai funcionar — com referências a Cialdini, Loewenstein e à fórmula do MrBeast.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div style="padding:3rem 2rem;background:rgba(13,16,24,.6);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)">
+      <div style="max-width:800px;margin:0 auto">
+        <p style="text-align:center;font-size:11px;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;color:#4a5670;margin-bottom:.75rem">como funciona</p>
+        <h2 style="text-align:center;font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:2.5rem">Pronto em <span style="color:#e8ff47">menos de 30 segundos</span></h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem">
+          <div style="text-align:center;padding:0 .75rem">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#e8ff47,#b8cf00);color:#080a0f;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 0 24px rgba(232,255,71,.2)">1</div>
+            <h3 style="font-size:13px;font-weight:700;margin-bottom:6px">Crie a chave Groq</h3>
+            <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Acesse console.groq.com, crie conta e gere sua chave grátis</p>
+          </div>
+          <div style="text-align:center;padding:0 .75rem">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#47b4ff,#0078cc);color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 0 24px rgba(71,180,255,.2)">2</div>
+            <h3 style="font-size:13px;font-weight:700;margin-bottom:6px">Digite o tema</h3>
+            <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Escreva o assunto do vídeo, escolha estilo e paleta</p>
+          </div>
+          <div style="text-align:center;padding:0 .75rem">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4ade80,#00a040);color:#080a0f;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 0 24px rgba(74,222,128,.2)">3</div>
+            <h3 style="font-size:13px;font-weight:700;margin-bottom:6px">Clique em gerar</h3>
+            <p style="font-size:12px;color:#8a9ab8;line-height:1.6">A IA Groq processa em segundos com Llama 3.3 70B</p>
+          </div>
+          <div style="text-align:center;padding:0 .75rem">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#ff4766,#cc0030);color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 0 24px rgba(255,71,102,.2)">4</div>
+            <h3 style="font-size:13px;font-weight:700;margin-bottom:6px">Copie e publique</h3>
+            <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Baixe a thumbnail e copie títulos, tags e descrição</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRATUITO -->
+    <div style="padding:3rem 2rem;max-width:700px;margin:0 auto;width:100%;text-align:center">
+      <p style="font-size:11px;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;color:#4a5670;margin-bottom:.75rem">custo real</p>
+      <h2 style="font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem">Completamente <span style="color:#e8ff47">gratuito</span></h2>
+      <p style="color:#8a9ab8;font-size:13px;margin-bottom:2rem">O ViralBoost AI usa o Groq — a API de IA mais rápida do mundo e 100% gratuita para uso pessoal.</p>
+      <div style="background:#0d1018;border:1px solid rgba(232,255,71,.2);border-radius:20px;padding:2rem;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#e8ff47,#f55036,transparent)"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+          <div style="text-align:center">
+            <p style="font-size:2rem;font-weight:800;color:#e8ff47;letter-spacing:-.04em">$0</p>
+            <p style="font-size:11px;color:#4a5670;text-transform:uppercase;letter-spacing:.05em;font-family:monospace">Custo</p>
+          </div>
+          <div style="text-align:center;border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)">
+            <p style="font-size:2rem;font-weight:800;color:#4ade80;letter-spacing:-.04em">14.4k</p>
+            <p style="font-size:11px;color:#4a5670;text-transform:uppercase;letter-spacing:.05em;font-family:monospace">Req/dia grátis</p>
+          </div>
+          <div style="text-align:center">
+            <p style="font-size:2rem;font-weight:800;color:#47b4ff;letter-spacing:-.04em">70B</p>
+            <p style="font-size:11px;color:#4a5670;text-transform:uppercase;letter-spacing:.05em;font-family:monospace">Parâmetros</p>
+          </div>
+        </div>
+        <p style="font-size:12px;color:#8a9ab8;line-height:1.6">Groq roda o modelo <strong style="color:#f0f2f8">Llama 3.3 70B</strong> — tão bom quanto o ChatGPT para geração de texto — de graça, sem cartão de crédito.</p>
+      </div>
+    </div>
+
+    <!-- CTA FINAL -->
+    <div style="padding:4rem 2rem;text-align:center;background:radial-gradient(ellipse 70% 60% at 50% 100%,rgba(232,255,71,.06) 0%,transparent 70%)">
+      <h2 style="font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.2;margin-bottom:1rem">
+        Pronto para <span style="color:#e8ff47">viralizar</span> seu próximo vídeo?
+      </h2>
+      <p style="color:#8a9ab8;font-size:14px;margin-bottom:2rem;max-width:440px;margin-left:auto;margin-right:auto">Leva menos de 2 minutos para configurar e você já usa na primeira geração — sem pagar nada.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+        <button id="btn-s1-next3" type="button" style="background:#e8ff47;color:#080a0f;border:none;padding:15px 36px;border-radius:12px;cursor:pointer;font-size:16px;font-weight:800;letter-spacing:-.01em;transition:all .2s;box-shadow:0 0 40px rgba(232,255,71,.15)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(232,255,71,.35)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 0 40px rgba(232,255,71,.15)'">
+          ⚡ Começar agora — é grátis
+        </button>
+        <button id="btn-demo-s1c" type="button" style="background:none;color:#8a9ab8;border:1px solid rgba(255,255,255,.1);padding:15px 28px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:500;transition:all .2s" onmouseover="this.style.color='#f0f2f8';this.style.borderColor='rgba(255,255,255,.25)'" onmouseout="this.style.color='#8a9ab8';this.style.borderColor='rgba(255,255,255,.1)'">
+          Ver demo primeiro
+        </button>
+      </div>
+      <p style="margin-top:1.25rem;font-size:11px;color:#4a5670">Sem cadastro · Sem mensalidade · Sem cartão · Funciona no Brasil</p>
+    </div>
+
+  </section>
+
+  <!-- ── TELA 2: Como criar chave Groq ─────────────────────────────── -->
+  <section class="screen" id="s2" aria-labelledby="s2-title" hidden>
+    <article class="ocard">
+      <header class="ocard-header">
+        <h2 class="screen-title" id="s2-title">Como obter sua <span>chave Groq</span> gratuita</h2>
+        <p class="screen-sub">Leva menos de 2 minutos — sem cartão de crédito</p>
+      </header>
+      <div class="ocard-body">
+        <ol class="step-list" aria-label="Passos para criar a chave">
+          <li class="step-item">
+            <span class="step-num" aria-hidden="true">1</span>
+            <div class="step-body">
+              <p class="step-title">Acesse o Groq Console</p>
+              <p class="step-desc">Abra: <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer">console.groq.com/keys</a></p>
+              <span class="step-tag blue">Abre numa nova aba</span>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-num" aria-hidden="true">2</span>
+            <div class="step-body">
+              <p class="step-title">Crie sua conta gratuitamente</p>
+              <p class="step-desc">Clique em <strong>"Sign Up"</strong>. Pode usar login do Google — rápido e sem dados de pagamento.</p>
+              <span class="step-tag green">100% gratuito · Sem cartão</span>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-num" aria-hidden="true">3</span>
+            <div class="step-body">
+              <p class="step-title">Gere uma nova chave</p>
+              <p class="step-desc">Clique em <strong>"Create API Key"</strong>, dê um nome (ex: "ViralBoost") e confirme.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-num" aria-hidden="true">4</span>
+            <div class="step-body">
+              <p class="step-title">Copie a chave gerada</p>
+              <p class="step-desc">A chave aparece <strong>uma única vez</strong>. Copie agora — começa com <code>gsk_...</code></p>
+              <span class="step-tag red">⚠️ Copie agora — não aparece de novo</span>
+            </div>
+          </li>
+        </ol>
+        <div class="info-box green" role="note">
+          <span class="info-icon" aria-hidden="true">🎁</span>
+          <div>
+            <p class="info-title">Por que o Groq é gratuito?</p>
+            <p class="info-desc">O Groq oferece <strong>14.400 requisições por dia</strong> no plano gratuito usando hardware próprio (LPU). Para um criador de conteúdo, isso é virtualmente ilimitado.</p>
+          </div>
+        </div>
+        <div class="info-box blue" role="note">
+          <span class="info-icon" aria-hidden="true">🔒</span>
+          <div>
+            <p class="info-title">Sua chave fica segura</p>
+            <p class="info-desc">A chave é salva <strong>apenas no seu navegador</strong>. Nunca é enviada para servidores nossos — vai direto para o Groq.</p>
+          </div>
+        </div>
+      </div>
+      <footer class="ocard-footer">
+        <button class="btn-secondary" data-goto="1" type="button">← Voltar</button>
+        <button class="btn-primary" data-goto="3" type="button" style="flex:2">Próximo — Cole sua chave →</button>
+      </footer>
+    </article>
+  </section>
+
+  <!-- ── TELA 3: Inserir Chave ────────────────────────────────────── -->
+  <section class="screen" id="s3" aria-labelledby="s3-title" hidden>
+    <article class="ocard">
+      <header class="ocard-header">
+        <h2 class="screen-title" id="s3-title">Cole sua <span>Chave Groq</span> e Comece</h2>
+        <p class="screen-sub">Você já tem a chave copiada? Cole abaixo e clique em entrar</p>
+      </header>
+      <div class="ocard-body">
+        <div class="info-box blue" role="note">
+          <span class="info-icon" aria-hidden="true">📋</span>
+          <div>
+            <p class="info-title">Como copiar a chave corretamente</p>
+            <p class="info-desc">
+              1. Acesse <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer">console.groq.com/keys</a><br>
+              2. Clique no ícone de <strong>copiar</strong> ao lado da chave<br>
+              3. Cole aqui com <strong>Ctrl+V</strong> (ou Cmd+V no Mac)
+            </p>
+          </div>
+        </div>
+        <div>
+          <label class="lbl" for="key-in">Sua Chave da API Groq</label>
+          <div class="key-wrap">
+            <input type="password" class="key-input" id="key-in" name="groq-key" placeholder="gsk_..." autocomplete="off" aria-required="true" aria-describedby="key-hint"/>
+            <button class="key-eye" id="key-eye" type="button" aria-label="Mostrar ou ocultar chave">👁</button>
+          </div>
+          <p class="field-hint" id="key-hint">A chave fica salva no seu navegador. Não precisa digitar de novo na próxima vez.</p>
+        </div>
+        <div class="err-box" id="serr" role="alert" aria-live="assertive" hidden></div>
+        <div>
+          <p class="lbl" style="margin-bottom:8px">Problemas comuns</p>
+          <div class="faq-list" role="list">
+            <div class="faq-item" role="listitem">
+              <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a1"><span>"Chave inválida" apareceu</span><span class="faq-arrow" aria-hidden="true">▼</span></button>
+              <div class="faq-a" id="faq-a1" hidden>Verifique se a chave começa com <code>gsk_</code> e se não há espaços extras. Tente copiar novamente clicando no ícone de cópia no console.groq.com.</div>
+            </div>
+            <div class="faq-item" role="listitem">
+              <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a2"><span>Limite de requisições atingido</span><span class="faq-arrow" aria-hidden="true">▼</span></button>
+              <div class="faq-a" id="faq-a2" hidden>O plano gratuito permite 14.400 requisições por dia. O limite reseta à meia-noite (UTC). Para uso intensivo, crie uma nova conta Groq.</div>
+            </div>
+            <div class="faq-item" role="listitem">
+              <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a3"><span>Esqueci de copiar a chave</span><span class="faq-arrow" aria-hidden="true">▼</span></button>
+              <div class="faq-a" id="faq-a3" hidden>Sem problema! Vá em console.groq.com/keys, clique em "Create API Key" e crie uma nova. A antiga pode ser deletada.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="ocard-footer">
+        <button class="btn-secondary" data-goto="2" type="button">← Voltar</button>
+        <button class="btn-primary" id="sbtn" type="button" style="flex:2">⚡ Verificar Chave e Entrar</button>
+      </footer>
+    </article>
+  </section>
+
+</div><!-- /onboarding -->
+
+<!-- ══════════════════════════════════════════════════════════════════
+     APP PRINCIPAL
+══════════════════════════════════════════════════════════════════ -->
+<div id="app" hidden aria-label="ViralBoost AI — App Principal">
+
+  <aside class="pl" aria-label="Painel de configuração">
+
+    <header style="display:flex;align-items:center;gap:9px">
+      <div style="width:25px;height:25px;background:var(--ac);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 16 16" focusable="false"><path d="M8 1L10.5 6h5l-4 3.5 1.5 5.5L8 12l-5 4 1.5-5.5L.5 7h5L8 1z" fill="#080a0f"/></svg>
+      </div>
+      <span style="font-weight:800;font-size:14px;letter-spacing:-.02em">Viral<span style="color:var(--ac)">Boost</span> AI</span>
+      <p class="groq-chip" style="margin-left:auto;font-size:9px;padding:2px 8px" aria-label="Groq ativo — gratuito"><span class="groq-dot" style="width:6px;height:6px" aria-hidden="true"></span>Groq — Grátis</p>
+      <button id="btn-sair" type="button" aria-label="Sair e trocar chave" style="background:none;border:1px solid var(--b1);color:var(--t3);font-size:10px;cursor:pointer;font-family:monospace;padding:3px 7px;border-radius:6px">Sair</button>
+    </header>
+
+    <section id="sec-t">
+      <div style="margin-bottom:9px">
+        <label class="app-lbl" for="in-title">Título / Tema do Vídeo *</label>
+        <input type="text" id="in-title" name="video-title" placeholder="Ex: Como economizar R$500 por mês sem abrir mão de nada" aria-required="true" aria-describedby="hint-title"/>
+        <p class="field-hint" id="hint-title">Escreva o tema central do vídeo. Quanto mais específico, melhores os títulos.</p>
+      </div>
+      <div style="margin-bottom:9px">
+        <label class="app-lbl" for="in-person">Personagem na Thumbnail (opcional)</label>
+        <input type="text" id="in-person" name="person" placeholder="Ex: homem surpreso, mulher sorrindo, sem pessoa..." aria-describedby="hint-person"/>
+        <p class="field-hint" id="hint-person">Descreva quem aparece na thumbnail, ou deixe em branco para só texto.</p>
+      </div>
+      <div class="r2" style="margin-bottom:9px">
+        <div>
+          <label class="app-lbl" for="in-niche">Nicho</label>
+          <select id="in-niche" name="niche">
+            <option value="">Geral</option>
+            <option>Finanças</option><option>Tech</option><option>Lifestyle</option>
+            <option>Gaming</option><option>Educação</option><option>Humor</option>
+            <option>Fitness</option><option>Culinária</option><option>Negócios</option>
+          </select>
+        </div>
+        <div>
+          <label class="app-lbl" for="in-sty">Estilo do Canal</label>
+          <select id="in-sty" name="style">
+            <option value="">Geral</option>
+            <option>Informativo</option><option>Motivacional</option><option>Tutorial</option>
+            <option>Polêmico</option><option>Storytelling</option><option>Top X</option>
+          </select>
+        </div>
+      </div>
+
+      <fieldset style="border:none;padding:0;margin-bottom:9px">
+        <legend class="app-lbl">Estilo Visual da Thumbnail</legend>
+        <div class="sg" role="radiogroup" aria-label="Estilo visual">
+          <div class="sc on" data-style="dramatic" role="radio" aria-checked="true" tabindex="0" aria-label="Dramático"><div class="sp" style="background:linear-gradient(135deg,#1a0a2e,#ff1744)" aria-hidden="true">🎭</div><p class="sn">Dramático</p></div>
+          <div class="sc" data-style="neon"     role="radio" aria-checked="false" tabindex="0" aria-label="Neon"><div class="sp" style="background:linear-gradient(135deg,#0d0d0d,rgba(0,255,255,.2))" aria-hidden="true">⚡</div><p class="sn">Neon</p></div>
+          <div class="sc" data-style="bright"   role="radio" aria-checked="false" tabindex="0" aria-label="Vibrante"><div class="sp" style="background:linear-gradient(135deg,#ff6b35,#ffd700)" aria-hidden="true">☀️</div><p class="sn">Vibrante</p></div>
+          <div class="sc" data-style="min"      role="radio" aria-checked="false" tabindex="0" aria-label="Minimalista"><div class="sp" style="background:linear-gradient(135deg,#1a1a2e,#4a90e2)" aria-hidden="true">🎯</div><p class="sn">Minimal</p></div>
+        </div>
+      </fieldset>
+
+      <fieldset style="border:none;padding:0;margin-bottom:9px">
+        <legend class="app-lbl">Paleta de Cores</legend>
+        <div class="pr-row" role="radiogroup" aria-label="Paleta de cores">
+          <div class="po on" data-p="ry" style="background:linear-gradient(135deg,#ff1744,#ffd700)" role="radio" aria-checked="true" aria-label="Vermelho e Amarelo" tabindex="0">✓</div>
+          <div class="po" data-p="bw" style="background:linear-gradient(135deg,#1565c0,#90caf9)" role="radio" aria-checked="false" aria-label="Azul e Branco" tabindex="0"></div>
+          <div class="po" data-p="gd" style="background:linear-gradient(135deg,#00c853,#1a1a2e)" role="radio" aria-checked="false" aria-label="Verde e Escuro" tabindex="0"></div>
+          <div class="po" data-p="pp" style="background:linear-gradient(135deg,#7c4dff,#ff4081)" role="radio" aria-checked="false" aria-label="Roxo e Rosa" tabindex="0"></div>
+          <div class="po" data-p="od" style="background:linear-gradient(135deg,#ff6d00,#1a1a2e)" role="radio" aria-checked="false" aria-label="Laranja e Escuro" tabindex="0"></div>
+          <div class="po" data-p="cd" style="background:linear-gradient(135deg,#00bcd4,#0d0d0d)" role="radio" aria-checked="false" aria-label="Ciano e Preto" tabindex="0"></div>
+          <div class="po" data-p="gb" style="background:linear-gradient(135deg,#ffd700,#0d0d0d)" role="radio" aria-checked="false" aria-label="Dourado e Preto" tabindex="0"></div>
+          <div class="po" data-p="rb" style="background:linear-gradient(135deg,#d50000,#0d0d0d)" role="radio" aria-checked="false" aria-label="Vermelho e Preto" tabindex="0"></div>
+        </div>
+        <p class="field-hint">Vermelho+Amarelo é a paleta mais usada pelo MrBeast para alto CTR.</p>
+      </fieldset>
+
+      <fieldset style="border:none;padding:0;margin-bottom:9px">
+        <legend class="app-lbl">Tom dos Títulos</legend>
+        <div class="tr" role="radiogroup" aria-label="Tom">
+          <div class="oc on" data-tone="viral" role="radio" aria-checked="true" tabindex="0" aria-label="Viral"><p class="ov" aria-hidden="true">🔥</p><p class="ol">Viral</p></div>
+          <div class="oc" data-tone="pro"   role="radio" aria-checked="false" tabindex="0" aria-label="Profissional"><p class="ov" aria-hidden="true">💼</p><p class="ol">Prof.</p></div>
+          <div class="oc" data-tone="edu"   role="radio" aria-checked="false" tabindex="0" aria-label="Educativo"><p class="ov" aria-hidden="true">📚</p><p class="ol">Educativo</p></div>
+        </div>
+      </fieldset>
+    </section>
+
+    <aside class="credits-panel" aria-label="Informações de créditos Groq">
+      <div class="credits-title">
+        <span>⚡ Groq — Plano Gratuito</span>
+        <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer" aria-label="Ver console Groq">Console →</a>
+      </div>
+      <dl class="credits-rows">
+        <div class="cr"><dt class="cr-label">Custo por geração</dt><dd class="cr-val green">$0,00</dd></div>
+        <div class="cr"><dt class="cr-label">Limite diário gratuito</dt><dd class="cr-val yellow">14.400 req</dd></div>
+        <div class="cr"><dt class="cr-label">Modelo utilizado</dt><dd class="cr-val" style="color:var(--ac2);font-family:monospace;font-size:10px">Llama 3.3 70B</dd></div>
+      </dl>
+    </aside>
+
+    <div id="gerr" class="err-box" role="alert" aria-live="assertive" hidden></div>
+
+    <button class="gbtn" id="gbtn" type="button" aria-label="Gerar thumbnail e conteúdo com IA">
+      <span id="gbtnc">⚡ Gerar Thumbnail + Conteúdo</span>
+    </button>
+    <p style="font-size:11px;color:var(--t3);text-align:center">Pressione Enter no campo de título para gerar rapidamente</p>
+  </aside>
+
+  <main class="pr" aria-label="Painel de resultados">
+    <header class="rh">
+      <h2>Resultado da Análise</h2>
+      <span class="rtag" id="rtag" aria-live="polite">Aguardando...</span>
+    </header>
+    <div class="rb" id="rb">
+      <div class="empty" id="emp" style="display:flex" aria-label="Nenhum resultado ainda">
+        <div style="width:58px;height:58px;border-radius:50%;background:var(--s2);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:22px" aria-hidden="true">⚡</div>
+        <p style="font-weight:700;font-size:15px;color:var(--t2)">Pronto para criar!</p>
+        <p style="font-size:12px;color:var(--t3);max-width:220px;line-height:1.6">Preencha o <strong style="color:var(--t2)">tema do vídeo</strong> à esquerda, escolha o estilo e clique em <strong style="color:var(--ac)">Gerar com IA</strong></p>
+      </div>
+      <div id="lstate" class="ls" style="display:none" aria-live="polite">
+        <div class="lr" role="progressbar" aria-label="Carregando"></div>
+        <p class="ll" id="llbl">Processando...</p>
+        <ol class="stps" id="stps" aria-label="Etapas de geração"></ol>
+      </div>
+      <div id="res" style="display:none;flex-direction:column;gap:1rem" aria-label="Resultados gerados"></div>
+    </div>
+  </main>
+
+</div><!-- /app -->
+
+<script>
+'use strict';
+
+/* ── CONFIG & STATE ─────────────────────────────────────────── */
+const CONFIG = {
+  STORAGE_KEY: 'vb_groq_key',
+  API_URL:     'https://api.groq.com/openai/v1/chat/completions',
+  MODEL:       'llama-3.3-70b-versatile',
+  MAX_TOKENS:  2500,
+};
+
+// ⚠️ AVISO DE SEGURANÇA: A chave é salva em localStorage — adequado para uso
+// pessoal/local. Em produção pública, use um backend para proteger a chave.
+
+const STATE = {
+  apiKey:     '',
+  isDemo:     false,
+  thumbStyle: 'dramatic',
+  palette:    'ry',
+  tone:       'viral',
+  lastResult: null,
+};
+
+const PALETTES = {
+  ry:{bg1:'#1a0505',bg2:'#2d0000',a1:'#ff1744',a2:'#ffd700',sh:'rgba(255,23,68,.6)'},
+  bw:{bg1:'#020b1a',bg2:'#0a1628',a1:'#2196f3',a2:'#64b5f6',sh:'rgba(33,150,243,.6)'},
+  gd:{bg1:'#001a0a',bg2:'#002d12',a1:'#00e676',a2:'#69f0ae',sh:'rgba(0,230,118,.5)'},
+  pp:{bg1:'#0d0516',bg2:'#1a0a28',a1:'#7c4dff',a2:'#ff4081',sh:'rgba(124,77,255,.6)'},
+  od:{bg1:'#1a0800',bg2:'#2d1100',a1:'#ff6d00',a2:'#ffab40',sh:'rgba(255,109,0,.6)'},
+  cd:{bg1:'#00080d',bg2:'#001219',a1:'#00bcd4',a2:'#4dd0e1',sh:'rgba(0,188,212,.5)'},
+  gb:{bg1:'#0d0900',bg2:'#1a1200',a1:'#ffd700',a2:'#ffecb3',sh:'rgba(255,215,0,.5)'},
+  rb:{bg1:'#0d0000',bg2:'#1a0000',a1:'#d50000',a2:'#ff5252',sh:'rgba(213,0,0,.7)'},
+};
+const PORD = Object.keys(PALETTES);
+
+const TRIGGERS = {
+  curiosity:{l:'Curiosidade',c:'#a78bfa',bg:'rgba(124,77,255,.12)',bd:'rgba(124,77,255,.3)',ic:'🔍'},
+  fomo:     {l:'Medo de Perder',c:'#f87171',bg:'rgba(255,71,102,.12)',bd:'rgba(255,71,102,.3)',ic:'⏰'},
+  result:   {l:'Resultado Incrível',c:'#4ade80',bg:'rgba(74,222,128,.12)',bd:'rgba(74,222,128,.3)',ic:'🚀'},
+};
+
+const STEPS = [
+  'Analisando tema e contexto',
+  'Aplicando psicologia de clique MrBeast',
+  'Gerando 3 gatilhos psicológicos',
+  'Desenhando thumbnail High-CTR',
+  'Pesquisando 15 tags estratégicas',
+  'Compilando análise do consultor',
+];
+
+/* ── UI ──────────────────────────────────────────────────────── */
+const UI = (() => {
+  let tt = null;
+  function toast(msg, d=2200) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(tt); tt = setTimeout(()=>el.classList.remove('show'), d);
+  }
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(()=>toast('Copiado!')).catch(()=>toast('Erro ao copiar.'));
+  }
+  function showAppErr(m)  { const e=document.getElementById('gerr');  e.textContent=m; e.hidden=false; }
+  function hideAppErr()   { document.getElementById('gerr').hidden=true; }
+  function showSetupErr(m){ const e=document.getElementById('serr');  e.textContent=m; e.hidden=false; }
+  function hideSetupErr() { document.getElementById('serr').hidden=true; }
+  function setLoading(on) {
+    const btn=document.getElementById('gbtn'), lbl=document.getElementById('gbtnc');
+    btn.disabled=on;
+    lbl.innerHTML = on ? '<span class="spin" aria-hidden="true"></span> Analisando com Groq...' : '⚡ Gerar Thumbnail + Conteúdo';
+  }
+  function initSteps() {
+    document.getElementById('stps').innerHTML = STEPS.map((s,i)=>`<li class="stp" id="sp${i}"><span class="sd" aria-hidden="true"></span><span>${s}</span></li>`).join('');
+  }
+  function advStep(idx) {
+    STEPS.forEach((_,i)=>{
+      const el=document.getElementById('sp'+i); if(!el)return;
+      el.className='stp'+(i<idx?' d':i===idx?' a':'');
+    });
+    const lbl=document.getElementById('llbl'); if(lbl&&STEPS[idx])lbl.textContent=STEPS[idx];
+  }
+  function showPanel(id) {
+    const panels = {
+      emp:    document.getElementById('emp'),
+      lstate: document.getElementById('lstate'),
+      res:    document.getElementById('res'),
+    };
+    Object.entries(panels).forEach(([pid, el]) => {
+      if(!el) return;
+      if(pid === id) {
+        el.removeAttribute('hidden');
+        el.style.display = pid === 'lstate' ? 'flex' : (pid === 'res' ? 'flex' : 'flex');
+      } else {
+        el.setAttribute('hidden', '');
+        el.style.display = 'none';
+      }
+    });
+  }
+  return {toast,copyText,showAppErr,hideAppErr,showSetupErr,hideSetupErr,setLoading,initSteps,advStep,showPanel};
+})();
+
+/* ── ONBOARDING ──────────────────────────────────────────────── */
+const Onboarding = (() => {
+  const TOTAL = 3;
+  function goTo(n) {
+    for(let i=1;i<=TOTAL;i++){
+      const s=document.getElementById('s'+i); if(!s)continue;
+      s.hidden=i!==n; s.classList.toggle('on',i===n);
+    }
+    document.querySelectorAll('.pdot').forEach((d,i)=>d.classList.toggle('on',i===n-1));
+    window.scrollTo(0,0);
+  }
+  function useDemo() { STATE.isDemo=true; launch(); }
+  async function startApp() {
+    const k = document.getElementById('key-in').value.trim();
+    UI.hideSetupErr();
+    if (!k) { UI.showSetupErr('Cole sua chave do Groq acima.'); return; }
+    if (!k.startsWith('gsk_')) { UI.showSetupErr('Chave inválida — deve começar com gsk_. Verifique em console.groq.com.'); return; }
+    // Test the key with a minimal request
+    const sbtn = document.getElementById('sbtn');
+    sbtn.disabled = true;
+    sbtn.textContent = 'Verificando chave...';
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + k },
+        body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 5, messages: [{ role: 'user', content: 'ok' }] })
+      });
+      const data = await res.json();
+      if (data.error) {
+        const m = data.error.message || '';
+        if (m.includes('invalid') || m.includes('Invalid') || res.status === 401)
+          UI.showSetupErr('Chave inválida. Verifique se copiou corretamente em console.groq.com.');
+        else if (res.status === 429)
+          UI.showSetupErr('Limite de requisições atingido. Aguarde alguns segundos.');
+        else
+          UI.showSetupErr('Erro: ' + m);
+        return;
+      }
+      STATE.apiKey = k;
+      localStorage.setItem(CONFIG.STORAGE_KEY, k);
+      launch();
+    } catch (e) {
+      UI.showSetupErr('Erro de conexão. Verifique sua internet e tente novamente.');
+    } finally {
+      sbtn.disabled = false;
+      sbtn.textContent = '\u26a1 Entrar no ViralBoost AI \u2014 Gr\u00e1tis';
+    }
+  }
+  function launch() {
+    document.getElementById('onboarding').hidden=true;
+    document.getElementById('app').hidden=false;
+  }
+  function logout() {
+    localStorage.removeItem(CONFIG.STORAGE_KEY); STATE.apiKey=''; STATE.isDemo=false;
+    document.getElementById('onboarding').hidden=false;
+    document.getElementById('app').hidden=true;
+    document.getElementById('key-in').value='';
+    UI.hideSetupErr(); goTo(3);
+  }
+  function toggleKey() {
+    const inp=document.getElementById('key-in');
+    inp.type=inp.type==='password'?'text':'password';
+  }
+  function toggleFaq(btn) {
+    const aid=btn.getAttribute('aria-controls'), a=document.getElementById(aid);
+    const arrow=btn.querySelector('.faq-arrow'), open=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!open));
+    a.classList.toggle('open',!open); a.hidden=open;
+    if(arrow)arrow.classList.toggle('open',!open);
+  }
+  return {goTo,useDemo,startApp,launch,logout,toggleKey,toggleFaq};
+})();
+
+/* ── APP UI ──────────────────────────────────────────────────── */
+const AppUI = (() => {
+  function pickStyle(el) {
+    STATE.thumbStyle=el.dataset.style;
+    document.querySelectorAll('.sc').forEach(c=>{c.classList.remove('on');c.setAttribute('aria-checked','false');});
+    el.classList.add('on'); el.setAttribute('aria-checked','true');
+  }
+  function pickPalette(el) {
+    STATE.palette=el.dataset.p;
+    document.querySelectorAll('.po').forEach(p=>{p.classList.remove('on');p.setAttribute('aria-checked','false');p.textContent='';});
+    el.classList.add('on'); el.setAttribute('aria-checked','true'); el.textContent='✓';
+  }
+  function pickTone(el) {
+    STATE.tone=el.dataset.tone;
+    document.querySelectorAll('.oc').forEach(c=>{c.classList.remove('on');c.setAttribute('aria-checked','false');});
+    el.classList.add('on'); el.setAttribute('aria-checked','true');
+  }
+  return {pickStyle,pickPalette,pickTone};
+})();
+
+/* ── API (GROQ) ──────────────────────────────────────────────── */
+const API = (() => {
+  async function call(messages) {
+    if(STATE.isDemo) return demo();
+    for(let attempt=1; attempt<=3; attempt++) {
+      let res;
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+        try {
+          res = await fetch(CONFIG.API_URL, {
+            method: 'POST',
+            signal: controller.signal,
+            headers: {'Content-Type':'application/json','Authorization':'Bearer '+STATE.apiKey},
+            body: JSON.stringify({
+              model: attempt <= 2 ? CONFIG.MODEL : 'llama-3.1-8b-instant',
+              max_tokens: CONFIG.MAX_TOKENS,
+              temperature: attempt===1 ? 0.7 : 0.3,
+              messages,
+            }),
+          });
+        } finally { clearTimeout(timeout); }
+      } catch(e) {
+        if(e.name === 'AbortError') {
+          if(attempt < 3) continue;
+          throw new Error('Tempo esgotado. O Groq demorou demais. Tente novamente.');
+        }
+        throw new Error('Falha de conexão. Verifique sua internet e tente novamente.');
+      }
+
+      let data;
+      try { data = await res.json(); }
+      catch(e) { if(attempt < 3) continue; throw new Error('Resposta inválida do servidor. Tente novamente.'); }
+
+      if(data.error) {
+        const m = data.error.message || '';
+        const code = data.error.code || '';
+        if(m.includes('invalid_api_key') || code === 'invalid_api_key')
+          throw new Error('Chave inválida. Clique em Sair e verifique em console.groq.com.');
+        if(res.status === 401)
+          throw new Error('Chave inválida ou expirada. Clique em Sair e gere uma nova chave.');
+        if(res.status === 429)
+          throw new Error('Limite atingido. Aguarde alguns segundos e tente novamente.');
+        if(res.status >= 500) {
+          if(attempt < 3) { await new Promise(r=>setTimeout(r, 2000)); continue; }
+          throw new Error('Servidor Groq com instabilidade. Tente novamente em instantes.');
+        }
+        // JSON generation error — retry with lower temperature
+        if(m.includes('Failed to generate JSON') || m.includes('json') || m.includes('generation')) {
+          if(attempt < 3) continue;
+        }
+        throw new Error('Erro: ' + m);
+      }
+
+      const raw = (data.choices?.[0]?.message?.content || '').trim();
+      if(!raw) { if(attempt < 3) continue; throw new Error('Resposta vazia. Tente novamente.'); }
+
+      // Extract JSON robustly from response text
+      const stripped = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
+      const start = stripped.indexOf('{');
+      const end = stripped.lastIndexOf('}');
+      if(start === -1 || end === -1 || end <= start) {
+        if(attempt < 3) continue;
+        throw new Error('Não foi possível processar a resposta. Tente novamente.');
+      }
+      try { return JSON.parse(stripped.slice(start, end+1)); }
+      catch(e) {
+        if(attempt < 3) continue;
+        throw new Error('JSON inválido na resposta. Tente novamente.');
+      }
+    }
+    throw new Error('Falha após 3 tentativas. Verifique sua conexão e tente novamente.');
+  }
+
+  function demo() {
+    return new Promise(r=>setTimeout(()=>r({
+      viral_score:93, seo_score:89, ctr_estimate:'9.3%',
+      psych_scores:{curiosity:86,fomo:83,result:91,authority:76},
+      titles:[
+        {text:'O Segredo que Ninguém Te Contou Sobre Ganhar Dinheiro',trigger:'curiosity',hook_explanation:'Abre um gap cognitivo irresistível — o cérebro do espectador PRECISA fechar esse loop.',power_words:['Segredo','Ninguém'],mrbeast_score:9},
+        {text:'Você Está Perdendo R$500 por Mês Por Não Saber Isso',trigger:'fomo',hook_explanation:'Aversão à perda: valor específico cria urgência imediata.',power_words:['Perdendo','R$500'],mrbeast_score:8},
+        {text:'Como Ganhei R$10.000 em 30 Dias do Zero (Com Prova)',trigger:'result',hook_explanation:'Número concreto + prazo + prova = credibilidade máxima.',power_words:['R$10.000','30 Dias'],mrbeast_score:10},
+      ],
+      tags:[{text:'ganhar dinheiro online',volume:'alto'},{text:'renda extra',volume:'alto'},{text:'como ganhar dinheiro',volume:'alto'},{text:'finanças pessoais',volume:'alto'},{text:'investimentos',volume:'alto'},{text:'independência financeira',volume:'medio'},{text:'liberdade financeira',volume:'medio'},{text:'dinheiro na internet',volume:'medio'},{text:'renda passiva',volume:'medio'},{text:'YouTube monetizado',volume:'medio'},{text:'como monetizar canal',volume:'baixo'},{text:'ganhar dinheiro YouTube',volume:'baixo'},{text:'crescer no YouTube 2025',volume:'baixo'},{text:'primeira renda online',volume:'baixo'},{text:'trabalhar de casa',volume:'baixo'}],
+      description:'Neste vídeo mostro passo a passo como gerei R$10.000 em 30 dias do zero.\n\n⏱️ TIMESTAMPS:\n00:00 - Introdução\n02:30 - O Método\n08:00 - Resultados Reais\n12:00 - Como Você Pode Fazer\n\n👇 LINKS:\n→ Meu Curso: [link]\n→ Discord: [link]\n\n#GanharDinheiro #RendaExtra #YouTube',
+      thumb_main_text:'R$10.000', thumb_sub_text:'em 30 dias', thumb_emotion:'chocado',
+      expert_analysis:{
+        title_psychology:'Os três títulos exploram Cialdini e Loewenstein. Curiosidade abre gap cognitivo. FOMO usa aversão à perda (perdas doem 2× mais). Resultado usa número específico para credibilidade imediata.',
+        thumbnail_psychology:'Vermelho+Amarelo ativa atenção primária. Expressão de choque ativa neurônios-espelho. MrBeast usa essa combinação em 94% das thumbnails de maior CTR.',
+        tag_strategy:'3 camadas: alto volume traz exposição, nicho traz audiência qualificada, cauda longa facilita ranking — cobrindo o funil completo.',
+        growth_insight:'Fórmula MrBeast: ROSTO expressivo (60% da thumbnail) + NÚMERO específico em fonte gigante + FUNDO limpo. Aumenta CTR em até 40%.',
+        viral_formula:{tokens:[{type:'hook',text:'Gap de Info'},{type:'number',text:'R$10.000'},{type:'reward',text:'Resultado Real'}],description:'Curiosidade + número específico + prova concreta = fórmula comprovada de alto CTR'},
+        verdict:'CTR potencial acima de 9%, bem acima da média de 5–7% do YouTube. Ação: mostre o resultado em vídeo nos primeiros 30 segundos.',
+      },
+    }),2000));
+  }
+  return {call};
+})();
+
+/* ── GENERATE ────────────────────────────────────────────────── */
+const Generate = (() => {
+  async function run() {
+    UI.hideAppErr();
+    const title=document.getElementById('in-title').value.trim();
+    if(!title){ UI.showAppErr('Digite o tema do vídeo no campo acima.'); document.getElementById('in-title').focus(); return; }
+
+    UI.setLoading(true); UI.showPanel('lstate');
+    document.getElementById('rtag').textContent='Gerando...';
+    document.getElementById('rtag').className='rtag';
+    UI.initSteps(); UI.advStep(0);
+    let si=0;
+    const iv=setInterval(()=>{ si=Math.min(si+1,STEPS.length-1); UI.advStep(si); },2500);
+    try {
+      const niche=document.getElementById('in-niche').value;
+      const sty=document.getElementById('in-sty').value;
+      const person=document.getElementById('in-person').value.trim();
+      const {sys, usr} = buildPrompt(title,niche,sty,person);
+      // Show user feedback while waiting for Groq
+      const lbl=document.getElementById('llbl');
+      if(lbl) lbl.textContent='Aguardando resposta do Groq AI...';
+      const data=await API.call([
+        {role:'system', content: sys},
+        {role:'user',   content: usr},
+      ]);
+      STATE.lastResult=data; clearInterval(iv);
+      Renderer.render(data);
+      document.getElementById('rtag').textContent='Pronto ✓';
+      document.getElementById('rtag').className='rtag done';
+    } catch(e) {
+      clearInterval(iv);
+      // Show empty state and error clearly
+      const empEl2 = document.getElementById('emp');
+      if(empEl2) { empEl2.removeAttribute('hidden'); empEl2.style.display = 'flex'; }
+      const lstEl2 = document.getElementById('lstate');
+      if(lstEl2) { lstEl2.setAttribute('hidden',''); lstEl2.style.display = 'none'; }
+      UI.showAppErr('❌ ' + e.message);
+    } finally { UI.setLoading(false); }
+  }
+
+  function buildPrompt(title,niche,sty,person) {
+    const sys = 'Voce e um consultor de crescimento YouTube especialista em psicologia de clique (MrBeast, Casey Neistat). Responda SOMENTE com JSON valido, sem explicacoes, sem markdown, sem codigo. Apenas o objeto JSON.';
+    const usr = 'Tema do video: "' + title + '". Nicho: "' + (niche||'geral') + '". Estilo: "' + (sty||'geral') + '". Tom: "' + STATE.tone + '". Personagem thumbnail: "' + (person||'nenhum') + '".'
+      + ' Gere um JSON com EXATAMENTE estas chaves:'
+      + ' viral_score (numero 70-98),'
+      + ' seo_score (numero 65-99),'
+      + ' ctr_estimate (string como "8.2%"),'
+      + ' psych_scores (objeto com curiosity, fomo, result, authority de 0-100),'
+      + ' titles (array com 3 objetos: text ate 60 chars, trigger sendo curiosity/fomo/result, hook_explanation string curta, power_words array de strings, mrbeast_score numero),'
+      + ' tags (array de 15 objetos com text e volume sendo alto/medio/baixo),'
+      + ' description (string 150-200 palavras com timestamps e hashtags),'
+      + ' thumb_main_text (2-3 palavras em maiusculas),'
+      + ' thumb_sub_text (frase curta),'
+      + ' thumb_emotion (uma palavra: chocado/feliz/surpreso/serio),'
+      + ' expert_analysis (objeto com strings: title_psychology, thumbnail_psychology, tag_strategy, growth_insight, verdict; e viral_formula com tokens array de 3 objetos com type e text, e description string).'
+      + ' IMPORTANTE: retorne apenas o JSON, nada mais.';
+    return {sys, usr};
+  }
+  return {run};
+})();
+
+/* ── RENDERER ────────────────────────────────────────────────── */
+const Renderer = (() => {
+  function render(d) {
+    const el=document.getElementById('res'); el.innerHTML='';
+
+    // Thumbnail
+    const ts=document.createElement('div'); ts.className='rs';
+    ts.innerHTML=`<div class="rl"><div class="rll">Thumbnail Gerada — 1280×720</div></div><div class="rc" style="padding:10px"><div class="tw"><canvas id="mc" width="1280" height="720" aria-label="Thumbnail gerada"></canvas></div></div><div class="tbtns"><button class="tbtn dl" id="btn-dl-thumb" type="button">⬇ Download PNG 1280×720</button><button class="tbtn" id="btn-regen" type="button">↻ Trocar Paleta</button></div>`;
+    el.appendChild(ts);
+    setTimeout(()=>{
+      const c=document.getElementById('mc');
+      Canvas.draw(c,d,STATE.palette,STATE.thumbStyle,document.getElementById('in-person').value.trim(),document.getElementById('in-niche').value);
+      document.getElementById('btn-dl-thumb')?.addEventListener('click',Canvas.download);
+      document.getElementById('btn-regen')?.addEventListener('click',()=>Canvas.regen(d));
+    },80);
+
+    // Scores
+    const sc=document.createElement('div'); sc.className='rs';
+    sc.innerHTML=`<div class="rl"><div class="rll">Score de Viralidade</div></div><div class="sg3"><div class="si"><p class="sv" style="color:var(--gr)">${d.viral_score||'—'}</p><p class="slb">Viral</p></div><div class="si"><p class="sv" style="color:var(--ac)">${d.seo_score||'—'}</p><p class="slb">SEO</p></div><div class="si"><p class="sv" style="color:var(--ac2)">${d.ctr_estimate||'—'}</p><p class="slb">CTR Est.</p></div></div>`;
+    el.appendChild(sc);
+
+    // Titles
+    const td=document.createElement('div'); td.className='rs';
+    td.innerHTML=`<div class="rl"><div class="rll">3 Títulos — Psicologia de Clique</div><span style="font-size:9px;color:var(--t3)">clique para selecionar · ⎘ para copiar</span></div><div class="vars" id="vw" role="radiogroup"></div>`;
+    el.appendChild(td);
+    const vw=document.getElementById('vw');
+    (d.titles||[]).forEach((t,i)=>{
+      const isO=typeof t==='object', text=isO?t.text:t, trigger=isO?t.trigger:'viral', hook=isO?t.hook_explanation:'', mb=isO?t.mrbeast_score:null;
+      const tr=TRIGGERS[trigger]||TRIGGERS.curiosity;
+      const v=document.createElement('div'); v.className='var'+(i===0?' on':'');
+      v.setAttribute('role','radio'); v.setAttribute('aria-checked',String(i===0)); v.setAttribute('tabindex','0');
+      v.onclick=()=>{vw.querySelectorAll('.var').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-checked','false');}); v.classList.add('on'); v.setAttribute('aria-checked','true');};
+      v.onkeydown=e=>{ if(e.key===' '||e.key==='Enter'){e.preventDefault();v.click();} };
+      const safe=text.replace(/'/g,"\'").replace(/"/g,'&quot;');
+      v.innerHTML=`<div class="vh"><span class="vn">0${i+1}</span><span class="pb" style="background:${tr.bg};color:${tr.c};border-color:${tr.bd}">${tr.ic} ${tr.l}</span>${mb!==null?`<span class="vmb">MB ${mb}/10</span>`:''}<button class="vcopy" type="button" onclick="event.stopPropagation();UI.copyText('${safe}')">⎘</button></div><div class="vt">${text}</div>${hook?`<div class="vhook">💡 ${hook}</div>`:''}`;
+      vw.appendChild(v);
+    });
+
+    // Tags
+    const rawT=d.tags||[], isTO=rawT.length>0&&typeof rawT[0]==='object';
+    const allTxt=rawT.map(t=>'#'+(typeof t==='object'?t.text:t)).join(', ');
+    const tgd=document.createElement('div'); tgd.className='rs';
+    const vols={alto:'Alto Volume 🔥',medio:'Nicho 📊',baixo:'Cauda Longa 🌱'};
+    const vcol={alto:'rgba(255,71,102,.45)',medio:'rgba(71,180,255,.45)',baixo:'rgba(74,222,128,.45)'};
+    let th='<div class="rc">';
+    if(isTO){['alto','medio','baixo'].forEach(v=>{const g=rawT.filter(t=>t.volume===v);if(!g.length)return;th+=`<div style="margin-bottom:${v!=='baixo'?'11px':'0'}"><div class="tgl">${vols[v]}</div><div class="tgw">${g.map(t=>`<span class="tg" style="border-color:${vcol[v]}" onclick="UI.copyText('#${t.text}')">#${t.text}</span>`).join('')}</div></div>`;});}
+    else{th+=`<div class="tgw">${rawT.slice(0,15).map(t=>{const tx=typeof t==='object'?t.text:t;return`<span class="tg" onclick="UI.copyText('#${tx}')">#${tx}</span>`;}).join('')}</div>`;}
+    th+='</div>';
+    const safeAll=allTxt.replace(/'/g,"\'");
+    tgd.innerHTML=`<div class="rl"><div class="rll">15 Tags por Volume de Busca</div><button type="button" onclick="UI.copyText('${safeAll}')" style="background:none;border:none;cursor:pointer;font-size:9px;color:var(--ac2);font-family:monospace;text-transform:uppercase;letter-spacing:.05em">⎘ Copiar todas</button></div>${th}`;
+    el.appendChild(tgd);
+
+    // Desc
+    const desc=d.description||'';
+    const dd=document.createElement('div'); dd.className='rs';
+    const copyDescBtn=document.createElement('button');copyDescBtn.type='button';copyDescBtn.textContent='\u2358 Copiar';copyDescBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:9px;color:var(--ac2);font-family:monospace;text-transform:uppercase;letter-spacing:.05em';copyDescBtn.addEventListener('click',()=>UI.copyText(desc));
+    dd.innerHTML='<div class="rl"><div class="rll">\u2584Descri\u00e7\u00e3o Otimizada para SEO</div></div><div class="rc" style="font-size:12.5px;color:var(--t2);line-height:1.65;white-space:pre-wrap"></div>';
+    const rlDiv=dd.querySelector('.rl'); rlDiv.innerHTML='<div class="rll">Descri\u00e7\u00e3o Otimizada para SEO</div>'; rlDiv.appendChild(copyDescBtn);
+    dd.querySelector('.rc').textContent=desc;
+    el.appendChild(dd);
+
+    // Psych meters
+    const ps=d.psych_scores||{curiosity:75,fomo:70,result:80,authority:65};
+    const md=document.createElement('div'); md.className='rs';
+    md.innerHTML=`<div class="rl"><div class="rll">Gatilhos Psicológicos Detectados</div></div><div class="rc"><div class="mts">${[['Curiosidade',ps.curiosity,'#a78bfa'],['Medo de Perder',ps.fomo,'#f87171'],['Resultado',ps.result,'#4ade80'],['Autoridade',ps.authority,'#e8ff47']].map(([l,v,c])=>`<div class="mt"><div class="ml">${l}</div><div class="mtr" role="progressbar" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="100"><div class="mf" data-w="${v}" style="background:${c}"></div></div><div class="mv">${v}</div></div>`).join('')}</div></div>`;
+    el.appendChild(md);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>el.querySelectorAll('.mf').forEach(b=>b.style.width=b.dataset.w+'%')));
+
+    // Formula
+    const ea=d.expert_analysis||{};
+    if(ea.viral_formula){
+      const fd=document.createElement('div'); fd.className='rs';
+      const tks=(ea.viral_formula.tokens||[]).map((t,i,a)=>`<span class="ft ${t.type||'hook'}">${t.text}</span>${i<a.length-1?'<span class="ft plus">+</span>':''}`).join('');
+      fd.innerHTML=`<div class="rl"><div class="rll">Fórmula Viral Aplicada</div></div><div class="rc"><div class="frow">${tks}</div><p style="font-size:12px;color:var(--t3);line-height:1.55">${ea.viral_formula.description||''}</p></div>`;
+      el.appendChild(fd);
+    }
+
+    // Expert
+    const imap={title_psychology:{ic:'🧠',bg:'rgba(124,77,255,.15)',t:'Por que estes títulos funcionam'},thumbnail_psychology:{ic:'👁',bg:'rgba(71,180,255,.15)',t:'Por que a thumbnail vai converter'},tag_strategy:{ic:'📈',bg:'rgba(74,222,128,.15)',t:'Estratégia de tags'},growth_insight:{ic:'⚡',bg:'rgba(255,71,102,.15)',t:'Insight de crescimento'}};
+    const insH=Object.entries(imap).map(([k,m])=>ea[k]?`<div class="in-i"><div class="ii" style="background:${m.bg}">${m.ic}</div><div><div class="it">${m.t}</div><div class="ib">${ea[k]}</div></div></div>`:'').join('');
+    const epd=document.createElement('div'); epd.className='rs';
+    epd.innerHTML=`<div class="rl"><div class="rll">Análise do Consultor de Crescimento</div></div><div class="ep"><div class="eph"><div class="epav">🧠</div><div><div class="epnm">ViralBoost AI — Consultor</div><div class="eprl">Psicologia de Clique · Estilo MrBeast &amp; Casey Neistat</div></div></div><div class="ins">${insH}</div>${ea.verdict?`<div class="verd"><div class="vb"></div><div class="vt2"><strong style="color:var(--t1);font-style:normal">Veredito: </strong>${ea.verdict}</div></div>`:''}</div>`;
+    el.appendChild(epd);
+
+    // Copy all
+    const titles=(d.titles||[]).map((t,i)=>`${i+1}. ${typeof t==='object'?t.text:t}`).join('\n');
+    const cd=document.createElement('div'); cd.className='rs';
+    const cabBtn=document.createElement('button');cabBtn.className='cab';cabBtn.type='button';cabBtn.textContent='\u2358 Copiar T\u00edtulos + Tags + Descri\u00e7\u00e3o';
+    cabBtn.addEventListener('click',()=>UI.copyText('T\u00edtulos:\n'+titles+'\n\nTAGS:\n'+allTxt+'\n\nDESCRI\u00c7\u00c3O:\n'+desc));
+    cd.appendChild(cabBtn);
+    el.appendChild(cd);
+
+    // Make results visible
+    const resEl = document.getElementById('res');
+    if(resEl) { resEl.removeAttribute('hidden'); resEl.style.display = 'flex'; resEl.style.flexDirection = 'column'; resEl.style.gap = '1rem'; }
+    const empEl = document.getElementById('emp');
+    if(empEl) { empEl.setAttribute('hidden',''); empEl.style.display = 'none'; }
+    const lstEl = document.getElementById('lstate');
+    if(lstEl) { lstEl.setAttribute('hidden',''); lstEl.style.display = 'none'; }
+  }
+  return {render};
+})();
+
+/* ============================================================
+   9. MODULE: CANVAS
+   ============================================================ */
+const Canvas = (() => {
+  function h2r(hex, a) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+
+  function draw(canvas, d, palKey, thumbStyle, person, niche) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = 1280, H = 720;
+    const pal = PALETTES[palKey] || PALETTES.ry;
+
+    // Fundo com gradiente radial
+    const bg = ctx.createRadialGradient(W*.3, H*.3, 0, W*.5, H*.5, W*.8);
+    bg.addColorStop(0, pal.bg2);
+    bg.addColorStop(1, pal.bg1);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Grade para estilos neon/dramatic
+    if (thumbStyle === 'neon' || thumbStyle === 'dramatic') {
+      ctx.strokeStyle = 'rgba(255,255,255,.04)';
+      ctx.lineWidth   = 1;
+      for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+      for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    }
+
+    // Círculos de luz (glows)
+    const glow = (x, y, r, c, a) => {
+      const g = ctx.createRadialGradient(x,y,0,x,y,r);
+      g.addColorStop(0, h2r(c, a));
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    };
+    glow(W*.15, H*.5,  W*.45, pal.a1, .25);
+    glow(W*.85, H*.3,  W*.4,  pal.a2, .2);
+
+    // Faixa diagonal (dramatic/bright)
+    if (thumbStyle === 'dramatic' || thumbStyle === 'bright') {
+      ctx.save();
+      ctx.globalAlpha = .1;
+      ctx.fillStyle   = pal.a1;
+      ctx.beginPath();
+      ctx.moveTo(0, H*.55); ctx.lineTo(W*.55, 0); ctx.lineTo(W*.7, 0); ctx.lineTo(0, H*.7);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Borda neon
+    if (thumbStyle === 'neon') {
+      ctx.strokeStyle  = h2r(pal.a1, .6);
+      ctx.lineWidth    = 3;
+      ctx.shadowColor  = pal.a1;
+      ctx.shadowBlur   = 20;
+      ctx.strokeRect(W*.04, H*.06, W*.52, H*.88);
+      ctx.shadowBlur   = 0;
+    }
+
+    // Barra lateral minimalista
+    if (thumbStyle === 'min') {
+      ctx.fillStyle = pal.a1;
+      ctx.fillRect(W*.04, H*.44, W*.04, H*.12);
+    }
+
+    // Rosto / personagem
+    const hasPerson = person && !person.toLowerCase().includes('sem');
+    if (hasPerson) _drawFace(ctx, W*.75, H*.45, H*.38, pal, person);
+
+    // Texto principal
+    const textMaxW = hasPerson ? W*.52 : W*.88;
+    const textX    = W*.06;
+    const mainText = (d.thumb_main_text || 'ASSISTA AGORA').toUpperCase();
+    const subText  = d.thumb_sub_text || '';
+
+    ctx.shadowColor = pal.sh;
+    ctx.shadowBlur  = 40;
+
+    // Auto-tamanho da fonte
+    let fs = 140;
+    ctx.font = `italic 900 ${fs}px Arial Black,sans-serif`;
+    while (ctx.measureText(mainText).width > textMaxW - 30 && fs > 70) {
+      fs -= 8;
+      ctx.font = `italic 900 ${fs}px Arial Black,sans-serif`;
+    }
+
+    // Quebra de linha manual
+    const words = mainText.split(' ');
+    const lines  = [];
+    let   line   = [];
+    words.forEach(w => {
+      const test = [...line, w].join(' ');
+      if (ctx.measureText(test).width > textMaxW - 20 && line.length) {
+        lines.push(line.join(' '));
+        line = [];
+      }
+      line.push(w);
+    });
+    if (line.length) lines.push(line.join(' '));
+
+    let ty = H * .1;
+    ctx.textBaseline = 'top';
+    lines.forEach(ln => {
+      ctx.strokeStyle = h2r(pal.a1, .4);
+      ctx.lineWidth   = 4;
+      ctx.strokeText(ln, textX, ty);
+      ctx.fillStyle   = '#fff';
+      ctx.fillText(ln, textX, ty);
+      ty += fs * 1.05;
+    });
+
+    // Linha de destaque abaixo do texto
+    ctx.shadowBlur = 0;
+    const ul = ctx.createLinearGradient(textX, 0, textX + textMaxW * .55, 0);
+    ul.addColorStop(0, pal.a1);
+    ul.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = ul;
+    ctx.fillRect(textX, ty + 6, textMaxW * .55, 5);
+    ty += 28;
+
+    // Subtítulo
+    if (subText) {
+      ctx.shadowColor  = pal.sh;
+      ctx.shadowBlur   = 20;
+      const sf         = Math.min(54, fs * .42);
+      ctx.font         = `700 ${sf}px Arial,sans-serif`;
+      ctx.fillStyle    = pal.a1;
+      ctx.fillText(subText.slice(0, 40), textX, ty + 6);
+      ctx.shadowBlur   = 0;
+    }
+
+    // Nicho no rodapé
+    ctx.font         = '600 26px Arial,sans-serif';
+    ctx.fillStyle    = 'rgba(255,255,255,.45)';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText((niche || 'YouTube').toUpperCase(), textX, H - 30);
+
+    // Vinhetas
+    const vig = ctx.createLinearGradient(0, H*.7, 0, H);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(1, 'rgba(0,0,0,.55)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+
+    const ev = ctx.createRadialGradient(W/2, H/2, H*.25, W/2, H/2, H*.8);
+    ev.addColorStop(0, 'rgba(0,0,0,0)');
+    ev.addColorStop(1, 'rgba(0,0,0,.45)');
+    ctx.fillStyle = ev;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function _drawFace(ctx, cx, cy, r, pal, desc) {
+    ctx.save();
+
+    // Aura de fundo
+    const au = ctx.createRadialGradient(cx, cy, 0, cx, cy, r*1.4);
+    au.addColorStop(0, h2r(pal.a1, .18));
+    au.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = au;
+    ctx.beginPath(); ctx.arc(cx, cy, r*1.4, 0, Math.PI*2); ctx.fill();
+
+    // Cabeça
+    const hg = ctx.createRadialGradient(cx, cy-r*.1, r*.1, cx, cy, r);
+    hg.addColorStop(0, 'rgba(60,50,40,.9)');
+    hg.addColorStop(1, 'rgba(20,15,10,.6)');
+    ctx.fillStyle = hg;
+    ctx.beginPath(); ctx.ellipse(cx, cy, r*.55, r*.68, 0, 0, Math.PI*2); ctx.fill();
+
+    // Ombros
+    ctx.beginPath();
+    ctx.moveTo(cx-r*.9, cy+r*.9);
+    ctx.quadraticCurveTo(cx-r*.5, cy+r*.55, cx-r*.42, cy+r*.5);
+    ctx.lineTo(cx+r*.42, cy+r*.5);
+    ctx.quadraticCurveTo(cx+r*.5, cy+r*.55, cx+r*.9, cy+r*.9);
+    ctx.fillStyle = 'rgba(30,20,15,.7)'; ctx.fill();
+
+    const dl   = desc.toLowerCase();
+    const isH  = dl.includes('sorri') || dl.includes('feliz');
+    const isS  = dl.includes('choc')  || dl.includes('surpres');
+    const ey   = cy - r*.08;
+    const eoh  = isS ? r*.14 : r*.08;
+
+    // Olhos
+    [-1, 1].forEach(s => {
+      const ex = cx + s*r*.2;
+      ctx.beginPath(); ctx.ellipse(ex, ey, r*.1, eoh, 0, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(ex+s*.02*r, ey, r*.055, eoh*.7, 0, 0, Math.PI*2); ctx.fillStyle = 'rgba(40,25,10,1)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(ex+s*.015*r, ey-eoh*.3, r*.02, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.fill();
+    });
+
+    // Boca
+    const my = cy + r*.22;
+    ctx.beginPath();
+    if (isH || isS) {
+      ctx.arc(cx, my, r*.15, .15, Math.PI-.15);
+      ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3;
+      if (isS) { ctx.arc(cx, my+r*.04, r*.1, 0, Math.PI*2); ctx.fillStyle = 'rgba(20,10,5,.9)'; ctx.fill(); }
+      ctx.stroke();
+    } else {
+      ctx.moveTo(cx-r*.13, my); ctx.lineTo(cx+r*.13, my);
+      ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 3; ctx.stroke();
+    }
+
+    // Luz de borda
+    const rg = ctx.createLinearGradient(cx-r*.5, cy, cx+r*.55, cy);
+    rg.addColorStop(0,   h2r(pal.a1, .35));
+    rg.addColorStop(.5,  'rgba(0,0,0,0)');
+    rg.addColorStop(1,   h2r(pal.a2, .25));
+    ctx.globalCompositeOperation = 'screen';
+    ctx.fillStyle = rg;
+    ctx.beginPath(); ctx.ellipse(cx, cy, r*.55, r*.68, 0, 0, Math.PI*2); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+
+    ctx.restore();
+  }
+
+  /** Regenera thumbnail com a próxima paleta */
+  function regen(d) {
+    if (!STATE.lastResult) return;
+    const ci  = PALETTE_ORDER.indexOf(STATE.palette);
+    STATE.palette = PALETTE_ORDER[(ci + 1) % PALETTE_ORDER.length];
+
+    // Atualiza indicador visual de paleta
+    document.querySelectorAll('.po').forEach(p => {
+      const on = p.dataset.p === STATE.palette;
+      p.classList.toggle('on', on);
+      p.setAttribute('aria-checked', String(on));
+      p.textContent = on ? '✓' : '';
+    });
+
+    const canvas = document.getElementById('mc');
+    if (!canvas) return;
+    draw(
+      canvas, d,
+      STATE.palette, STATE.thumbStyle,
+      document.getElementById('in-person').value.trim(),
+      document.getElementById('in-niche').value
+    );
+    UI.toast('Nova paleta aplicada!');
+  }
+
+  /** Faz o download da thumbnail como PNG */
+  function download() {
+    const canvas = document.getElementById('mc');
+    if (!canvas) return;
+    const a      = document.createElement('a');
+    a.download   = 'thumbnail-viralboost-1280x720.png';
+    a.href       = canvas.toDataURL('image/png', 1);
+    a.click();
+    UI.toast('Download iniciado — 1280×720 PNG!');
+  }
+
+  return { draw, regen, download };
+})();
+
+
+/* ── INIT ────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+  if(saved){ STATE.apiKey=saved; Onboarding.launch(); }
+
+  // Onboarding nav
+  document.querySelectorAll('[data-goto]').forEach(btn=>btn.addEventListener('click',()=>Onboarding.goTo(Number(btn.dataset.goto))));
+
+  // Landing buttons
+  ['btn-demo-s1','btn-demo-s1b','btn-demo-s1c'].forEach(id=>document.getElementById(id)?.addEventListener('click',Onboarding.useDemo));
+  ['btn-s1-next','btn-s1-next2','btn-s1-next3'].forEach(id=>document.getElementById(id)?.addEventListener('click',()=>Onboarding.goTo(2)));
+
+  // Setup screen 3
+  document.getElementById('sbtn')?.addEventListener('click',Onboarding.startApp);
+  document.getElementById('key-eye')?.addEventListener('click',Onboarding.toggleKey);
+  document.getElementById('key-in')?.addEventListener('keydown',e=>{ if(e.key==='Enter')Onboarding.startApp(); });
+  document.querySelectorAll('.faq-q').forEach(btn=>btn.addEventListener('click',()=>Onboarding.toggleFaq(btn)));
+
+  // App
+  document.getElementById('btn-sair')?.addEventListener('click',Onboarding.logout);
+  document.querySelectorAll('.sc').forEach(el=>{ el.addEventListener('click',()=>AppUI.pickStyle(el)); el.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();AppUI.pickStyle(el);}}); });
+  document.querySelectorAll('.po').forEach(el=>{ el.addEventListener('click',()=>AppUI.pickPalette(el)); el.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();AppUI.pickPalette(el);}}); });
+  document.querySelectorAll('.oc').forEach(el=>{ el.addEventListener('click',()=>AppUI.pickTone(el)); el.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();AppUI.pickTone(el);}}); });
+  document.getElementById('gbtn')?.addEventListener('click',Generate.run);
+  document.getElementById('in-title')?.addEventListener('keydown',e=>{ if(e.key==='Enter')Generate.run(); });
+});
+</script>
+</body>
+</html>
